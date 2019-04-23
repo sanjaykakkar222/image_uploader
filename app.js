@@ -1,22 +1,58 @@
-var express = require('express');
-var app = express();
- 
-// images
-app.use('/upload', express.static(__dirname + '/uploads'));
- 
-//app.use(require('./apis'));
- 
-// Start web server at port 3000
-var port = 3000;
+const express = require('express');
+const mongoose = require('mongoose');
+var fs = require('fs');
+const busyboy = require('busboy');
 
-app.use('/',function(req,res)
-{
+var app=express();//using express method
 
-res.send('hello');
 
+var route=require('./routes/route');
+
+
+//connect to monodb
+
+mongoose.connect('mongodb://localhost:27017/image_application')
+
+
+
+
+mongoose.connection.on("connected",()=>{
+
+    console.log("connected to databse mongodb @27017")
 });
-var server = app.listen(port, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log('Server start at http://%s:%s', host, port);
+
+
+mongoose.connection.on("error",(err)=>{
+
+    if(err)
+    {
+
+        console.log("error in database connection "+err);
+    }
+});
+//port no
+
+const port=3000;
+
+//adding middleware-cors
+
+//app.use(cors());
+
+//body-parser
+
+//app.use(bodyparser.json());
+
+//routes
+app.use('/api',route);
+//listen server
+
+app.get('/',(req,res)=>{
+
+    res.send("foobar");
+});
+
+
+app.listen(port,()=>{
+
+    console.log("server started at port "+port);
 });

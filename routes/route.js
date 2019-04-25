@@ -38,6 +38,35 @@ route.post('/image', (req, res) => {
 })
 
 
+app.post(('/img64'), (req, res) => {
+    var base64Data = req.body.image.replace(/^data:image\/(?:jpeg|jpg|JPEG|JPG|png|PNG);base64,/, "");
+    let extension;
+     if(lowerCaseData.indexOf('png') !== -1){
+            extension = '.png'
+        }else if(lowerCaseData.indexOf('jpg') !== -1){
+            extension = '.jpg'
+        }else if(lowerCaseData.indexOf('jpeg') !== -1){
+            extension = '.jpeg'
+        };
+    fs.writeFile("uploads_image/" + filename + extension, base64Data, 'base64', function (err) {
+          let newImage = new schema();
+        newImage.name =name;
+        newImage.path =saveTo;
+        newImage.save((err, users) => {
+            if (err) {
+                res.send(err)
+                return;
+            } else {
+                res.end("file uploaded");
+            }
+        })
+        if (err) {
+            console.log(err);
+        }
+    });
+})
+
+
 
   
 module.exports=route;
